@@ -1,0 +1,9 @@
+_target_: src.policy.PendulumBackstepping
+
+energy_gain: 0.03
+backstepping_gain: 2.
+pd_coeffs: = [2, 3]
+switch_loc: 0.01
+action_min: -0.075
+action_max: 0.075
+system: ~ system
