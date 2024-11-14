@@ -79,6 +79,8 @@ function execute_state {
 # *------------ COMMON DEFINITIONS ----------------------
 SRC_PATH=""
 PROJECT_DIR="regelum-playground"
+BUFFER_SIZE=20000
+BUFFER_RESET=false
 echo ARGS $#
 if [ "$#" == "2" ] ; then
 SRC_PATH=${1} ;
@@ -130,8 +132,12 @@ REHYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES="" \
     scenario.policy_lr=0.00079 \
     scenario.q_lr=0.00025 \
     scenario.alpha=0.0085 \
-    scenario.learning_starts=1000 \
-    +seed=4
+    scenario.learning_starts=250 \
+    scenario.total_timesteps=5000 \
+    scenario.buffer_size=${BUFFER_SIZE} \
+    scenario.reset_rb_each_task=${BUFFER_RESET} \
+    +seed=42 \
+    --experiment=sac_rp
 
 echo DONE
 
