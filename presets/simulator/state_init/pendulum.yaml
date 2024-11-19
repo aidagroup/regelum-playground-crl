@@ -1,4 +1,0 @@
-_target_: src.simulator.UniformStateInitGenerator
-bounds:
-  - = [-3.14159, 3.14159]  
-  - = [-1.0, 1.0]

@@ -1,2 +1,0 @@
-# state_init: = np.array([[1, 1, np.pi]])
-state_init: = numpy.array([1., 1., 4. * numpy.pi / 4.])
