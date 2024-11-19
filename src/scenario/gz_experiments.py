@@ -27,7 +27,8 @@ class SACScenarioWrapper(SACScenario):
                  autotune = True, 
                  reset_rb_each_task = False,
                  checkpoint_dirpath = None,
-                 env = ...):
+                 env = ...,
+                 **kwargs):
         
         super().__init__(simulator, 
                          running_objective, 
@@ -171,7 +172,8 @@ class TD3ScenarioWrapper(TD3Scenario):
                  policy_noise = 0.2,
                  reset_rb_each_task = False,
                  checkpoint_dirpath = None,
-                 env=...):
+                 env=...,
+                 **kwargs):
         super().__init__(simulator, 
                          running_objective, 
                          device, 
@@ -186,7 +188,8 @@ class TD3ScenarioWrapper(TD3Scenario):
                          exploration_noise, 
                          learning_rate, 
                          policy_noise,
-                         env)
+                         env,
+                         **kwargs)
         
         self.reset_rb_each_task = reset_rb_each_task
         self.evaluation_episode_number = int(kwargs.get("evaluation_episode_number", "3"))
@@ -194,6 +197,12 @@ class TD3ScenarioWrapper(TD3Scenario):
 
         if checkpoint_dirpath is not None:
             self.checkpoint_dirpath = checkpoint_dirpath
+
+    def meet_stop_condition(self):
+        if self.phase == "eval":
+            return self.iteration_id > self.next_iter_max if hasattr(self, "next_iter_max") else True
+        else:
+            return False
 
     def run(self):
         if hasattr(self, "checkpoint_dirpath"):
@@ -214,19 +223,6 @@ class TD3ScenarioWrapper(TD3Scenario):
                 super().run()
 
             self.save_checkpoint()
-
-        self.phase = "eval"
-        for id, task_info in enumerate(self.envs.envs[0].env.task_list):
-            print("task_info:", task_info)
-
-            self.task_name = task_info
-            self.envs.envs[0].env.switch_task(id)
-
-            # check_learning_start=True -> use policy to update action at the beginning
-            # set total_timesteps and learning_start as inf to prevent actor from gradient descent
-            self.learning_starts = self.total_timesteps = int(1e6)
-            self.next_iter_max = self.evaluation_episode_number + self.iteration_id
-            super().run(check_learning_start=False)
 
         self.phase = "eval"
         for id, task_info in enumerate(self.envs.envs[0].env.task_list):
@@ -278,7 +274,8 @@ class TD3ScenarioWrapper(TD3Scenario):
         }
 
 class PushingObjectSACScenario(SACScenarioWrapper):
-    def __init__(self, simulator, running_objective, device="cuda:0", total_timesteps=1000000, buffer_size=1000000, gamma=0.99, tau=0.005, batch_size=256, learning_starts=5000, policy_lr=0.0003, q_lr=0.001, policy_frequency=2, target_network_frequency=1, alpha=0.2, autotune=True, reset_rb_each_task=False, checkpoint_dirpath=None, env=...):
+    def __init__(self, simulator, running_objective, device="cuda:0", total_timesteps=1000000, buffer_size=1000000, gamma=0.99, tau=0.005, batch_size=256, learning_starts=5000, policy_lr=0.0003, q_lr=0.001, policy_frequency=2, target_network_frequency=1, alpha=0.2, autotune=True, reset_rb_each_task=False, checkpoint_dirpath=None, 
+                 env=..., **kwargs):
         super().__init__(simulator, 
                          running_objective, 
                          device, 
@@ -296,11 +293,13 @@ class PushingObjectSACScenario(SACScenarioWrapper):
                          autotune, 
                          reset_rb_each_task, 
                          checkpoint_dirpath, 
-                         PushingObject)
+                         PushingObject,
+                         **kwargs)
 
 
 class LineFollowingSACScenario(SACScenarioWrapper):
-    def __init__(self, simulator, running_objective, device="cuda:0", total_timesteps=1000000, buffer_size=1000000, gamma=0.99, tau=0.005, batch_size=256, learning_starts=5000, policy_lr=0.0003, q_lr=0.001, policy_frequency=2, target_network_frequency=1, alpha=0.2, autotune=True, reset_rb_each_task=False, checkpoint_dirpath=None, env=...):
+    def __init__(self, simulator, running_objective, device="cuda:0", total_timesteps=1000000, buffer_size=1000000, gamma=0.99, tau=0.005, batch_size=256, learning_starts=5000, policy_lr=0.0003, q_lr=0.001, policy_frequency=2, target_network_frequency=1, alpha=0.2, autotune=True, reset_rb_each_task=False, checkpoint_dirpath=None, 
+                 env=..., **kwargs):
         super().__init__(simulator, 
                          running_objective, 
                          device, 
@@ -318,7 +317,8 @@ class LineFollowingSACScenario(SACScenarioWrapper):
                          autotune, 
                          reset_rb_each_task, 
                          checkpoint_dirpath, 
-                         LineFollowing)
+                         LineFollowing,
+                         **kwargs)
 
 
 class RobotPursuitSACScenario(SACScenarioWrapper):
@@ -349,7 +349,8 @@ class PushingObjectTD3Scenario(TD3ScenarioWrapper):
     def __init__(self, simulator, running_objective, device="cuda:0", total_timesteps=1000000, buffer_size=1000000, gamma=0.99, tau=0.005, batch_size=256, learning_starts=25000, policy_frequency=2, noise_clip=0.5, exploration_noise=0.1, learning_rate=0.0003, policy_noise=0.2,
                  reset_rb_each_task=False, 
                  checkpoint_dirpath=None,
-                 env=...):
+                 env=...,
+                 **kwargs):
         super().__init__(
             simulator, 
             running_objective, 
@@ -367,7 +368,8 @@ class PushingObjectTD3Scenario(TD3ScenarioWrapper):
             policy_noise, 
             reset_rb_each_task,
             checkpoint_dirpath,
-            PushingObject
+            PushingObject,
+            **kwargs
         )
 
 
@@ -375,7 +377,8 @@ class LineFollowingTD3Scenario(TD3ScenarioWrapper):
     def __init__(self, simulator, running_objective, device="cuda:0", total_timesteps=1000000, buffer_size=1000000, gamma=0.99, tau=0.005, batch_size=256, learning_starts=25000, policy_frequency=2, noise_clip=0.5, exploration_noise=0.1, learning_rate=0.0003, policy_noise=0.2,
                  reset_rb_each_task=False, 
                  checkpoint_dirpath=None,
-                 env=...):
+                 env=...,
+                 **kwargs):
         super().__init__(
             simulator, 
             running_objective, 
@@ -393,7 +396,8 @@ class LineFollowingTD3Scenario(TD3ScenarioWrapper):
             policy_noise, 
             reset_rb_each_task, 
             checkpoint_dirpath,
-            LineFollowing
+            LineFollowing,
+            **kwargs
         )
 
 
@@ -401,7 +405,8 @@ class RobotPursuitTD3Scenario(TD3ScenarioWrapper):
     def __init__(self, simulator, running_objective, device="cuda:0", total_timesteps=1000000, buffer_size=1000000, gamma=0.99, tau=0.005, batch_size=256, learning_starts=25000, policy_frequency=2, noise_clip=0.5, exploration_noise=0.1, learning_rate=0.0003, policy_noise=0.2,
                  reset_rb_each_task=False, 
                  checkpoint_dirpath=None,
-                 env=...):
+                 env=...,
+                 **kwargs):
         super().__init__(
             simulator, 
             running_objective, 
@@ -419,7 +424,8 @@ class RobotPursuitTD3Scenario(TD3ScenarioWrapper):
             policy_noise, 
             reset_rb_each_task, 
             checkpoint_dirpath,
-            RobotPursuit
+            RobotPursuit,
+            **kwargs
         )
 
 

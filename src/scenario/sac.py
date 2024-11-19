@@ -242,8 +242,11 @@ class SACScenario(CleanRLScenario):
 
         obs, _ = self.envs.reset()
         for global_step in range(self.total_timesteps):
+            if self.meet_stop_condition():
+                break
+
             # ALGO LOGIC: put action logic here
-            if global_step < self.learning_starts:
+            if check_learning_start and global_step < self.learning_starts:
                 actions = np.array(
                     [
                         np.random.uniform(

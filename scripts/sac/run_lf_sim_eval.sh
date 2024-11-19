@@ -134,7 +134,7 @@ REHYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES="" \
     scenario.alpha=0.0085 \
     scenario.learning_starts=250 \
     scenario.total_timesteps=5000 \
-    scenario.checkpoint_dirpath="/regelum-playground/regelum_data/outputs/2024-11-12/13-17-48/0" \
+    scenario.checkpoint_dirpath="/regelum-playground/checkpoints/LineFollowing/large_buffer" \
     scenario.evaluation_only=true \
     +seed=42 \
     --experiment=sac_lf
@@ -146,4 +146,3 @@ sleep 5s
 # execute_watchout
 
 #ps -ef | grep gz
-

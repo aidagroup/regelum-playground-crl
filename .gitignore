@@ -4,6 +4,7 @@
 *.py[cod]
 *$py.class
 
+checkpoints/
 # C extensions
 *.so
 

@@ -8,12 +8,12 @@
 # when running the CALFV scenario, while not affecting other scenarios
 
 defaults:
-  - policy: pd
   - system: pendulum_with_friction
   - simulator: casadi
   - scenario: scenario
   - common: ${system}
   - initial_conditions: ${system}
+  - optional policy: pd
   - optional running_objective: ${system}
   - optional agent_calf: ${system}
 
