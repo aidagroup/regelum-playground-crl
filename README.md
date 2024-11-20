@@ -1,6 +1,9 @@
-## Table of Content
-- [Table of Content](#table-of-content)
-- [About](#about)
+> ## About 
+
+This is repository providing Soft-Actor-Critic (SAC) baseline with 3 experiments namely Line Following, Robot Pursuit and Pushing Object based on [regelum-control](https://regelum.aidynamic.group), a framework for control and reinforcement learning.
+It showcases our implementation and experimental results using SAC.
+
+> ## Table of Content
 - [Getting started](#getting-started)
 - [Monitor training progress and Pick checkpoints](#monitor-training-progress-and-pick-checkpoints)
 - [Evaluation with checkpoints](#evaluation-with-checkpoints)
@@ -14,10 +17,7 @@
   - [Pushing Object](#pushing-object-1)
 
 
-## About 
 
-This is a playground based on [regelum-control](https://regelum.aidynamic.group), a framework for control and reinforcement learning.
-It showcases various dynamical systems and controllers (also called policies).
 
 ## Getting started
 This repository aims to perform all the tasks in a Docker container. Details of running and attaching the Docker container can be found [here](installation.md).
