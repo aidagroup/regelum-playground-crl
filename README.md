@@ -1,45 +1,28 @@
-<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
-
+## Table of Content
+- [Table of Content](#table-of-content)
 - [About](#about)
 - [Getting started](#getting-started)
-  - [Perform learning process in Gazebo](#perform-learning-process-in-gazebo)
 - [Monitor training progress and Pick checkpoints](#monitor-training-progress-and-pick-checkpoints)
 - [Evaluation with checkpoints](#evaluation-with-checkpoints)
   - [Line Following](#line-following)
   - [Robot Pursuit](#robot-pursuit)
   - [Pushing Object](#pushing-object)
 - [Reproduction](#reproduction)
+  - [Perform learning process in Gazebo](#perform-learning-process-in-gazebo)
   - [Line Following](#line-following-1)
   - [Robot Pursuit](#robot-pursuit-1)
   - [Pushing Object](#pushing-object-1)
 
 
-<!-- TOC end -->
-
-<!-- TOC --><a name="about"></a>
 ## About 
 
 This is a playground based on [regelum-control](https://regelum.aidynamic.group), a framework for control and reinforcement learning.
 It showcases various dynamical systems and controllers (also called policies).
 
-<!-- TOC --><a name="getting-started"></a>
 ## Getting started
 This repository aims to perform all the tasks in a Docker container. Details of running and attaching the Docker container can be found [here](installation.md).
 
 **ALL THE FOLLOWING COMMANDS HAVE TO BE USED INSIDE DOCKER CONTAINTER.**
-
-<!-- TOC --><a name="perform-learning-process-in-gazebo"></a>
-### Perform learning process in Gazebo
-
-Open a Terminal to navigate to the workspace folder inside the Docker container.
-
-``` bash
-# run a container
-source docker/run_docker.sh
-
-# inside the container
-cd regelum-playground
-```
 
 ## Monitor training progress and Pick checkpoints
 
@@ -62,7 +45,6 @@ The output on your terminal would be like:
 [DATETIME] [PID] [INFO] Listening at: http://127.0.0.1:5000 (73632)
 [DATETIME] [PID] [INFO] Using worker: sync
 ```
-
 
 Click on the URL `http://127.0.0.1:5000` and then MLFlow interface will pop-up in your browser.
 
@@ -112,9 +94,20 @@ Eventually, we will have results which are illustrated by these video.
 </div>
 
 
-<!-- TOC --><a name="reproduction"></a>
 ## Reproduction
 In this baseline, we only provide experiments with Sort-Critic-Actor (SAC).
+
+### Perform learning process in Gazebo
+
+Open a Terminal to navigate to the workspace folder inside the Docker container.
+
+``` bash
+# run a container
+source docker/run_docker.sh
+
+# inside the container
+cd regelum-playground
+```
 
 ### Line Following
 Execute pre-defined environmnent setups and controllers by using the following command:
