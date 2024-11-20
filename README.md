@@ -3,12 +3,12 @@
 - [About](#about)
 - [Getting started](#getting-started)
   - [Perform learning process in Gazebo](#perform-learning-process-in-gazebo)
-- [Reproduction](#reproduction)
+- [Monitor training progress and Pick checkpoints](#monitor-training-progress-and-pick-checkpoints)
+- [Evaluation with checkpoints](#evaluation-with-checkpoints)
   - [Line Following](#line-following)
   - [Robot Pursuit](#robot-pursuit)
   - [Pushing Object](#pushing-object)
-- [Monitor training progress and Pick checkpoints](#monitor-training-progress-and-pick-checkpoints)
-- [Evaluation with checkpoints](#evaluation-with-checkpoints)
+- [Reproduction](#reproduction)
   - [Line Following](#line-following-1)
   - [Robot Pursuit](#robot-pursuit-1)
   - [Pushing Object](#pushing-object-1)
@@ -39,31 +39,6 @@ source docker/run_docker.sh
 
 # inside the container
 cd regelum-playground
-```
-
-<!-- TOC --><a name="reproduction"></a>
-## Reproduction
-In this baseline, we only provide experiments with Sort-Critic-Actor (SAC).
-
-### Line Following
-Execute pre-defined environmnent setups and controllers by using the following command:
-
-``` bash
-source scripts/sac/run_lf_sim.sh
-```
-
-### Robot Pursuit
-Execute pre-defined environmnent setups and controllers by using the following command:
-
-``` bash
-source scripts/sac/run_rp_sim.sh
-```
-
-### Pushing Object
-Execute pre-defined environmnent setups and controllers by using the following command:
-
-``` bash
-source scripts/sac/run_po_sim.sh
 ```
 
 ## Monitor training progress and Pick checkpoints
@@ -135,3 +110,29 @@ Eventually, we will have results which are illustrated by these video.
     <img width="402" src="media/2_runs_po_large.gif"/>
     <img width="402" src="media/2_runs_po_small.gif"/>
 </div>
+
+
+<!-- TOC --><a name="reproduction"></a>
+## Reproduction
+In this baseline, we only provide experiments with Sort-Critic-Actor (SAC).
+
+### Line Following
+Execute pre-defined environmnent setups and controllers by using the following command:
+
+``` bash
+source scripts/sac/run_lf_sim.sh
+```
+
+### Robot Pursuit
+Execute pre-defined environmnent setups and controllers by using the following command:
+
+``` bash
+source scripts/sac/run_rp_sim.sh
+```
+
+### Pushing Object
+Execute pre-defined environmnent setups and controllers by using the following command:
+
+``` bash
+source scripts/sac/run_po_sim.sh
+```
