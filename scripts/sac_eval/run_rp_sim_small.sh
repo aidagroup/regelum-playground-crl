@@ -5,6 +5,7 @@ PROCESSES=(
     "pushing_objects.sdf"
     "models/catching_robot.sdf"
     "gazebo_simulator"
+    "ExperimentPO.py"
     "ruby"
     "gz"
 )
@@ -78,6 +79,8 @@ function execute_state {
 # *------------ COMMON DEFINITIONS ----------------------
 SRC_PATH=""
 PROJECT_DIR="regelum-playground"
+BUFFER_SIZE=20000
+BUFFER_RESET=false
 echo ARGS $#
 if [ "$#" == "2" ] ; then
 SRC_PATH=${1} ;
@@ -121,11 +124,22 @@ echo  Executing Experiment
 
 REHYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES="" \
     python3 run.py \
-    scenario=td3_robot_pursuit \
+    scenario=sac_robot_pursuit \
     simulator=gz_3w_rp \
     system=3wrobot_robot_pursuit \
     running_objective=3wrobot_robot_pursuit \
-    +seed=4
+    scenario.autotune=False \
+    scenario.policy_lr=0.00079 \
+    scenario.q_lr=0.00025 \
+    scenario.alpha=0.0085 \
+    scenario.learning_starts=250 \
+    scenario.total_timesteps=5000 \
+    scenario.checkpoint_dirpath="/regelum-playground/checkpoints/RobotPursuit/small_buffer" \
+    scenario.evaluation_only=true \
+    scenario.buffer_size=5000 \
+    scenario.evaluation_episode_number=3 \
+    +seed=42 \
+    --experiment=sac_rp
 
 echo DONE
 

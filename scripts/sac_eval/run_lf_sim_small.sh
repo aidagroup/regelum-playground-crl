@@ -76,10 +76,16 @@ function execute_state {
 #------------ COMMON DEFINITIONS ----------------------
 SRC_PATH=""
 PROJECT_DIR="regelum-playground"
+BUFFER_SIZE=20000
 echo ARGS $#
-if [ "$#" == "2" ] ; then
-SRC_PATH=${1} ;
-PROJECT_DIR=${2}
+if [ "$#" == "1" ] ; then
+BUFFER_RESET=${1}
+echo "BUFFER_RESET" ${BUFFER_RESET}
+elif [ "$#" == "2" ]
+then
+BUFFER_RESET=${1}
+BUFFER_SIZE=${2}
+echo "BUFFER_RESET:" ${BUFFER_RESET} " BUFFER_RESET:" ${BUFFER_SIZE}
 fi 
 ROOT_PATH="${SRC_PATH}/${PROJECT_DIR}"
 #-------------------------------------------------------
@@ -118,17 +124,27 @@ echo  Executing Experiment
 
 REHYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES="" \
     python3 run.py \
-    scenario=td3_line_following \
+    scenario=sac_line_following \
     simulator=gz_3w_lf \
     system=3wrobot_line_following \
     running_objective=3wrobot_line_following \
-    scenario.learning_starts=1000 \
-    +seed=4
+    scenario.autotune=False \
+    scenario.policy_lr=0.00079 \
+    scenario.q_lr=0.00025 \
+    scenario.alpha=0.0085 \
+    scenario.learning_starts=250 \
+    scenario.total_timesteps=5000 \
+    scenario.checkpoint_dirpath="/regelum-playground/checkpoints/LineFollowing/small_buffer" \
+    scenario.evaluation_only=true \
+    scenario.buffer_size=5000 \
+    scenario.evaluation_episode_number=3 \
+    +seed=42 \
+    --experiment=sac_lf
 
 echo DONE
 
 # kill zombies
+sleep 5s
 # execute_watchout
 
 #ps -ef | grep gz
-

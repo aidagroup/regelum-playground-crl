@@ -2,8 +2,10 @@
 PROCESSES=(
     "gz.*sim"
     "colored_line_following.sdf"
-    "models/pushing_objects.sdf"
+    "pushing_objects.sdf"
+    "models/catching_robot.sdf"
     "gazebo_simulator"
+    "ExperimentPO.py"
     "ruby"
     "gz"
 )
@@ -77,6 +79,8 @@ function execute_state {
 # *------------ COMMON DEFINITIONS ----------------------
 SRC_PATH=""
 PROJECT_DIR="regelum-playground"
+BUFFER_SIZE=20000
+BUFFER_RESET=false
 echo ARGS $#
 if [ "$#" == "2" ] ; then
 SRC_PATH=${1} ;
@@ -87,6 +91,7 @@ ROOT_PATH="${SRC_PATH}/${PROJECT_DIR}"
 
 # PYTHONPATH - PYTHONPATH - PYTHONPATH --------------------------------
 export PYTHONPATH=$PYTHONPATH:${ROOT_PATH}/src
+export PYTHONPATH=$PYTHONPATH:${SRC_PATH}/sccl/src
 # *--------------------------------------------------------------------
 
 # GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ
@@ -109,28 +114,37 @@ execute_watchout
 # start gazebo
 # sim_options=" -r -s --headless-rendering --render-engine ogre2"
 sim_options=" -r --render-engine ogre2"
-#sim_options=" -r --render-engine ogre"
-gz sim ${sim_options} "${ROOT_PATH}/models/pushing_objects.sdf"  &
+gz sim ${sim_options} "${ROOT_PATH}/models/catching_robot.sdf"  &
 
 # debug
-ps -ef | grep gz
+#ps -ef | grep gz
 
 # start RL
 echo  Executing Experiment
 
 REHYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES="" \
     python3 run.py \
-    scenario=td3_pushing_object \
-    simulator=gz_3w \
-    system=3wrobot_pushing_object \
-    running_objective=3wrobot_pushing_object \
-    +seed=4 \
-    --fps=10
+    scenario=sac_robot_pursuit \
+    simulator=gz_3w_rp \
+    system=3wrobot_robot_pursuit \
+    running_objective=3wrobot_robot_pursuit \
+    scenario.autotune=False \
+    scenario.policy_lr=0.00079 \
+    scenario.q_lr=0.00025 \
+    scenario.alpha=0.0085 \
+    scenario.learning_starts=250 \
+    scenario.total_timesteps=5000 \
+    scenario.checkpoint_dirpath="/regelum-playground/checkpoints/RobotPursuit/large_buffer" \
+    scenario.evaluation_only=true \
+    scenario.buffer_size=20000 \
+    scenario.evaluation_episode_number=3 \
+    +seed=42 \
+    --experiment=sac_rp
 
 echo DONE
 
 # kill zombies
-execute_watchout
+# execute_watchout
 
 # debug
 # ps -ef | grep gz

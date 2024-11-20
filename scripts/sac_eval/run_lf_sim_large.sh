@@ -1,8 +1,7 @@
-#!/bin/bash
+#! /bin/bash
 PROCESSES=(
     "gz.*sim"
     "colored_line_following.sdf"
-    "models/pushing_objects.sdf"
     "gazebo_simulator"
     "ruby"
     "gz"
@@ -74,19 +73,27 @@ function execute_state {
 }
 
 
-# *------------ COMMON DEFINITIONS ----------------------
+#------------ COMMON DEFINITIONS ----------------------
 SRC_PATH=""
 PROJECT_DIR="regelum-playground"
+BUFFER_SIZE=20000
 echo ARGS $#
-if [ "$#" == "2" ] ; then
-SRC_PATH=${1} ;
-PROJECT_DIR=${2}
+if [ "$#" == "1" ] ; then
+BUFFER_RESET=${1}
+echo "BUFFER_RESET" ${BUFFER_RESET}
+elif [ "$#" == "2" ]
+then
+BUFFER_RESET=${1}
+BUFFER_SIZE=${2}
+echo "BUFFER_RESET:" ${BUFFER_RESET} " BUFFER_RESET:" ${BUFFER_SIZE}
 fi 
 ROOT_PATH="${SRC_PATH}/${PROJECT_DIR}"
-# *-------------------------------------------------------
+#-------------------------------------------------------
 
-# PYTHONPATH - PYTHONPATH - PYTHONPATH --------------------------------
+
+# PYTHONPATH - PYTHONPATh - PYTHONPATH --------------------------------
 export PYTHONPATH=$PYTHONPATH:${ROOT_PATH}/src
+export PYTHONPATH=$PYTHONPATH:${SRC_PATH}/sccl/src
 # *--------------------------------------------------------------------
 
 # GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ - GZ
@@ -102,43 +109,42 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 # kill zombies
 execute_watchout
 
-# debug
 #ps -ef | grep gz
 
-
 # start gazebo
-# sim_options=" -r -s --headless-rendering --render-engine ogre2"
+# sim_options=" -r -s --headless-rendering --render-engine ogre2 "
 sim_options=" -r --render-engine ogre2"
-#sim_options=" -r --render-engine ogre"
-gz sim ${sim_options} "${ROOT_PATH}/models/pushing_objects.sdf"  &
+gz sim ${sim_options} "${ROOT_PATH}/models/colored_line_following.sdf"  &
 
 # debug
-ps -ef | grep gz
+#ps -ef | grep gz
 
 # start RL
 echo  Executing Experiment
 
 REHYDRA_FULL_ERROR=1 CUDA_VISIBLE_DEVICES="" \
     python3 run.py \
-    scenario=sac_pushing_object \
-    simulator=gz_3w \
-    system=3wrobot_pushing_object \
-    running_objective=3wrobot_pushing_object \
+    scenario=sac_line_following \
+    simulator=gz_3w_lf \
+    system=3wrobot_line_following \
+    running_objective=3wrobot_line_following \
     scenario.autotune=False \
     scenario.policy_lr=0.00079 \
     scenario.q_lr=0.00025 \
     scenario.alpha=0.0085 \
-    scenario.total_timesteps=40 \
-    scenario.learning_starts=1000 \
-    scenario.checkpoint_dirpath="/regelum-playground/regelum_data/outputs/2024-10-29/16-12-02/0" \
-    +seed=4 \
-    --fps=10
+    scenario.learning_starts=250 \
+    scenario.total_timesteps=5000 \
+    scenario.checkpoint_dirpath="/regelum-playground/checkpoints/LineFollowing/large_buffer" \
+    scenario.evaluation_only=true \
+    scenario.buffer_size=20000 \
+    scenario.evaluation_episode_number=3 \
+    +seed=42 \
+    --experiment=sac_lf
 
 echo DONE
 
 # kill zombies
+sleep 5s
 # execute_watchout
 
-# debug
-# ps -ef | grep gz
-
+#ps -ef | grep gz
